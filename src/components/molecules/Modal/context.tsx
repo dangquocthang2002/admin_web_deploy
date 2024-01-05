@@ -1,5 +1,5 @@
 import { atom, useAtom } from 'jotai'
-import { ApplicationModal } from 'reducers/app.reducer'
+import { ApplicationModal } from '../../../reducer/app.reducer'
 
 interface ModalTypes {
   isOpen: boolean
