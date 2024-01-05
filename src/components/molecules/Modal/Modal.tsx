@@ -12,7 +12,6 @@ import { FocusTrap } from "../FocusTrap";
 import s from "./Modal.module.css";
 import { ModalProps } from "./Modal.types";
 // import { Modal as Dialog } from 'antd'
-import AddImagesTrainingView from "@/pageComponents/auth/AddImagesTrainingView";
 import AddNewProductView from "@/pageComponents/auth/AddNewProductView";
 import AddNewUserView from "@/pageComponents/auth/AddNewUserView";
 import AddTypeRequestView from "@/pageComponents/auth/AddTypeRequestView";
@@ -45,8 +44,8 @@ function renderModalContent(view: ApplicationModal | string) {
       return <WorkingView />;
     case ApplicationModal.UPDATE_REQUEST_STATUS_VIEW:
       return <UpdateRequestStatusView />;
-    case ApplicationModal.ADD_USER_IMAGES_TRAINING:
-      return <AddImagesTrainingView />;
+    // case ApplicationModal.ADD_USER_IMAGES_TRAINING:
+    //   return <AddImagesTrainingView />;
     case ApplicationModal.UPDATE_SALARY_VIEW:
       return <UpdateSalaryView />;
     case ApplicationModal.TRAINING_FACE:

@@ -6,13 +6,13 @@ import { getListUser } from "@/services/api/user.api";
 import { IRole, IUser } from "@/types";
 import {
   EditOutlined,
-  UsergroupAddOutlined,
   ScanOutlined,
   SearchOutlined,
+  UsergroupAddOutlined,
 } from "@ant-design/icons";
 import type { InputRef } from "antd";
 import { Button, Input, Space, Table, TablePaginationConfig } from "antd";
-import type { ColumnsType, ColumnType } from "antd/es/table";
+import type { ColumnType, ColumnsType } from "antd/es/table";
 import type {
   FilterConfirmProps,
   FilterValue,
@@ -23,7 +23,7 @@ import { useEffect, useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import toast from "react-hot-toast";
 
-interface Props {}
+interface Props { }
 
 interface TableParams {
   pagination?: TablePaginationConfig;
@@ -59,11 +59,11 @@ const getRandomuserParams = (params: TableParams) => ({
   ...params,
 });
 
-function Page({}: Props) {
+function Page({ }: Props) {
   const openAddNewUser = useToggleModal(ApplicationModal.ADD_USER_VIEW);
-  const openAddUserImages = useToggleModal(
-    ApplicationModal.ADD_USER_IMAGES_TRAINING
-  );
+  // const openAddUserImages = useToggleModal(
+  //   ApplicationModal.ADD_USER_IMAGES_TRAINING
+  // );
   const openUpdateUserView = useToggleModal(ApplicationModal.UPDATE_USER_VIEW);
   // const openTrainingFaceView = useToggleModal(ApplicationModal.TRAINING_FACE);
   const [searchText, setSearchText] = useState("");
@@ -78,10 +78,10 @@ function Page({}: Props) {
     },
   });
 
-  const openAddImageTraining = (id: string) => {
-    localStorage.setItem("userId", id);
-    openAddUserImages();
-  };
+  // const openAddImageTraining = (id: string) => {
+  //   localStorage.setItem("userId", id);
+  //   openAddUserImages();
+  // };
 
   // const openTrainingFace = (id: string) => {
   //   localStorage.setItem("userId", id);
@@ -298,13 +298,13 @@ function Page({}: Props) {
             className="cursor-pointer"
             title="Edit user role"
             onClick={() => {
-              openAddImageTraining(record._id);
+              // openAddImageTraining(record._id);
             }}
           />
           <ScanOutlined
             className="cursor-pointer"
             title="Training face "
-            onClick={() => {}}
+            onClick={() => { }}
           />
         </div>
       ),

@@ -21,7 +21,7 @@ interface Props {
 
 }
 const lineColors = ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9", "#c45850"]
-const formatter = (value: number) => <CountUp end={value} separator="," />;
+const formatter = (value: any) => <CountUp end={value} separator="," />;
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, BarElement);
 const Page = ({ }: Props) => {
     const { roleName, user } = useSelector(authSelector);
@@ -321,11 +321,13 @@ const Page = ({ }: Props) => {
                                 }}
                                 plugins={[xScaleImage]}
                                 onClick={(event: any) => {
-                                    if (getElementAtEvent(chartRef.current, event).length > 0) {
-                                        const clickItem = getElementAtEvent(chartRef.current, event)[0];
-                                        const datasetIndex = clickItem?.datasetIndex;
-                                        const dataPoint = clickItem?.index;
-                                        setSupplierIdCurrent(dataBar?.datasets[datasetIndex].links[dataPoint])
+                                    if (chartRef) {
+                                        if (getElementAtEvent(chartRef?.current as unknown as any, event).length > 0) {
+                                            const clickItem = getElementAtEvent(chartRef?.current as unknown as any, event)[0];
+                                            const datasetIndex = clickItem?.datasetIndex;
+                                            const dataPoint = clickItem?.index;
+                                            setSupplierIdCurrent(dataBar?.datasets[datasetIndex].links[dataPoint])
+                                        }
                                     }
                                 }}
                             />
@@ -336,12 +338,12 @@ const Page = ({ }: Props) => {
                             }}>Top 5 sản phẩm được bán chạy</i>
                             {dataDoughnut && <Doughnut
                                 data={dataDoughnut}
-                                option={{
-                                    title: {
-                                        display: true,
-                                        text: "Thống kê các sản phẩm"
-                                    }
-                                }}
+                            // option={{
+                            //     title: {
+                            //         display: true,
+                            //         text: "Thống kê các sản phẩm"
+                            //     }
+                            // }}
 
                             />}
                         </div>
@@ -361,7 +363,7 @@ const Page = ({ }: Props) => {
                 <div className="flex gap-3">
 
                     <RangePicker
-                        value={Object.values(dateStatistical)?.map((item: string) => dayjs(item, "DD-MM-YYYY"))}
+                        value={Object.values(dateStatistical)?.map((item: string) => dayjs(item, "DD-MM-YYYY")) as unknown as any}
                         format="DD-MM-YYYY"
                         showTime={{ format: "DD-MM-YYYY" }}
                         onChange={onCalendarChange}
@@ -389,13 +391,15 @@ const Page = ({ }: Props) => {
                         <Line
                             data={dataLine}
                             options={{
-                                title: {
-                                    display: true,
-                                    text: "Thống kê theo ngày, tổng hóa đơn và tổng tiền"
-                                },
-                                legend: {
-                                    display: true,
-                                    position: "bottom"
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: "Thống kê theo ngày, tổng hóa đơn và tổng tiền"
+                                    },
+                                    legend: {
+                                        display: true,
+                                        position: "bottom"
+                                    }
                                 }
                             }}
 
@@ -408,10 +412,12 @@ const Page = ({ }: Props) => {
                         }}>Top 5 sản phẩm được bán chạy</i>
                         {dataDoughnut && <Doughnut
                             data={dataDoughnut}
-                            option={{
-                                title: {
-                                    display: true,
-                                    text: "Thống kê các sản phẩm"
+                            options={{
+                                plugins: {
+                                    title: {
+                                        display: true,
+                                        text: "Thống kê các sản phẩm"
+                                    }
                                 }
                             }}
 
