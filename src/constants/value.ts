@@ -135,7 +135,11 @@ export enum STATUS_ORDER {
   SHIPPING_RETURN = 'SHIPPING_RETURN',
   OUT_OF_STOCK = 'OUT_OF_STOCK', // supplier has rejected
 };
-
+export const STATUS_ORDER_ARRAY = [
+  'SHIPPING',
+  'WAITING',
+  'SHIPPING_SUCCESS', 'SHIPPING_CANCEL',
+  'OUT_OF_STOCK',]
 export enum STATUS_REQUEST {
   PENDING = 'pending', // supplier hasn't accepted yet
   ACCEPTED = 'accepted', // supplier has accepted

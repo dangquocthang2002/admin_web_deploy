@@ -1,6 +1,6 @@
 import style from "@/assets/css/user-management.module.css";
 import Layout from "@/components/Layout";
-import { ROLE_NAMES, STATUS_ORDER } from "@/constants/value";
+import { ROLE_NAMES, STATUS_ORDER, STATUS_ORDER_ARRAY } from "@/constants/value";
 import { useToggleModal } from "@/hooks/application.hooks";
 import { authSelector } from "@/reducer";
 import { ApplicationModal } from "@/reducer/app.reducer";
@@ -26,11 +26,12 @@ import {
   Input,
   InputRef,
   MenuProps,
+  Select,
   Space,
   Table,
   TablePaginationConfig
 } from "antd";
-import type { ColumnType, ColumnsType } from "antd/es/table";
+import type { ColumnsType, ColumnType } from "antd/es/table";
 import type {
   FilterConfirmProps,
   FilterValue,
@@ -67,6 +68,7 @@ interface DataType {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  feedbackSupplier: string;
 }
 
 type DataIndex = keyof DataType;
@@ -154,6 +156,8 @@ function Page({ }: Props) {
   useEffect(() => {
     getData();
   }, [user, router?.pathname]);
+  console.log(data);
+
   const handleTableChange = (
     pagination: TablePaginationConfig,
     filters: Record<string, FilterValue>,
@@ -326,8 +330,9 @@ function Page({ }: Props) {
       title: "ID",
       dataIndex: "_id",
       key: "_id",
-      width: "30%",
+      width: "10%",
       ...getColumnSearchProps("_id"),
+      render: (text) => <a>{text?.substring(0, 10)}</a>,
     },
     {
       title: "description",
@@ -342,7 +347,7 @@ function Page({ }: Props) {
       dataIndex: "ShipAddress",
       key: "ShipAddress",
       ...getColumnSearchProps("ShipAddress"),
-      width: "20%",
+      width: "18%",
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -350,28 +355,80 @@ function Page({ }: Props) {
       dataIndex: "orderDate",
       key: "orderDate",
       ...getColumnSearchProps("orderDate"),
-      width: "20%",
+      width: "12%",
       sortDirections: ["descend", "ascend"],
       render: (text) => <a>{text?.substring(0, 10)}</a>,
+    },
+    {
+      title: "Feedback Supplier",
+      dataIndex: "feedbackSupplier",
+      key: "feedbackSupplier",
+      width: "25%",
+      ...getColumnSearchProps("feedbackSupplier"),
     },
     {
       title: "status Order",
       dataIndex: "statusOrder",
       key: "statusOrder",
       ...getColumnSearchProps("statusOrder"),
-      width: "20%",
+      width: "35%",
       sortDirections: ["descend", "ascend"],
-      render: (text: string) => (
-        <span
-          className={`cursor-pointer  ${text === STATUS_ORDER.ACCEPTED || text === STATUS_ORDER.PAYMENT_SUCCESS
-            ? "text-green-500"
-            : text === STATUS_ORDER.REJECTED
-              ? "text-red-500"
-              : ""
-            }`}
-        >
-          {text?.substring(0, 10)}
-        </span>
+      render: (text: string, record: any) => (
+        STATUS_ORDER_ARRAY.includes(text) ?
+          <Select
+            value={text}
+            style={{ width: "100%" }}
+            placeholder="Status order"
+            onChange={async (value) => {
+              let feedbackSupplier;
+              switch (value) {
+                case STATUS_ORDER.WAITING:
+                  feedbackSupplier = "Đang chuẩn bị hàng"
+                  break;
+                case STATUS_ORDER.SHIPPING:
+                  feedbackSupplier = "Đơn hàng đang trên đường giao đến bạn"
+                  break;
+                case STATUS_ORDER.SHIPPING_SUCCESS:
+                  feedbackSupplier = "Giao hàng thành công"
+                  break;
+                case STATUS_ORDER.OUT_OF_STOCK:
+                  feedbackSupplier = "Kho vừa hết hàng"
+                  break;
+                case STATUS_ORDER.SHIPPING_CANCEL:
+                  feedbackSupplier = "Đơn hàng đã bị hủy do quá trình giao gặp vấn đề"
+                  break;
+                default:
+                  break;
+              }
+              await acceptOrderAPI(record?._id, {
+                statusOrder: value,
+                feedbackSupplier: feedbackSupplier,
+              })
+                .then(() => {
+                  toast.success("Đơn hàng được cập nhật");
+                  setTimeout(() => {
+                    router.reload();
+                  }, 1000);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
+            }}
+            options={STATUS_ORDER_ARRAY?.map((item: any) => ({
+              value: item,
+              label: item,
+            })) as unknown as any || []}
+          /> :
+          <span
+            className={`cursor-pointer  ${text === STATUS_ORDER.ACCEPTED || text === STATUS_ORDER.PAYMENT_SUCCESS
+              ? "text-green-500"
+              : text === STATUS_ORDER.REJECTED
+                ? "text-red-500"
+                : ""
+              }`}
+          >
+            {text?.substring(0, 10)}
+          </span>
       ),
     },
     {
@@ -380,7 +437,7 @@ function Page({ }: Props) {
       key: "",
       render: (value: any, record: any, index: number) => (
         <div className="flex flex-row gap-3">
-          {record.statusOrder !== STATUS_ORDER.PAYMENT_SUCCESS &&
+          {record.statusOrder !== STATUS_ORDER.PAYMENT_SUCCESS && !STATUS_ORDER_ARRAY.includes(record.statusOrder) &&
             <>
               <CheckCircleOutlined
                 className={`cursor-pointer ${[STATUS_ORDER.ACCEPTED, STATUS_ORDER.PAYMENT_SUCCESS].includes(record.statusOrder)
