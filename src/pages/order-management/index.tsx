@@ -374,7 +374,7 @@ function Page({ }: Props) {
       width: "35%",
       sortDirections: ["descend", "ascend"],
       render: (text: string, record: any) => (
-        STATUS_ORDER_ARRAY.includes(text) ?
+        STATUS_ORDER_ARRAY.includes(text) || text === STATUS_ORDER.PAYMENT_SUCCESS ?
           <Select
             value={text}
             style={{ width: "100%" }}
